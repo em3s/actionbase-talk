@@ -1,0 +1,210 @@
+:root {
+    --bg: #FAF8F5;
+    --fg: #2A2A2A;
+    --muted: #8B8680;
+    --accent: #3D5A6C;
+    --rule: #D8D3CC;
+
+    --font-body: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+}
+
+.reveal-viewport,
+.reveal {
+    background: var(--bg);
+}
+
+.reveal {
+    font-family: var(--font-body);
+    color: var(--fg);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+    font-family: var(--font-body);
+    color: var(--fg);
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin: 0 0 0.6em 0;
+}
+
+.reveal h1 { font-size: 2.6em; }
+.reveal h2 { font-size: 1.7em; }
+.reveal h3 { font-size: 1.25em; color: var(--muted); font-weight: 600; }
+.reveal h4 { font-size: 1em; color: var(--muted); font-weight: 500; }
+
+.reveal p,
+.reveal li {
+    font-size: 0.95em;
+    line-height: 1.55;
+}
+
+.reveal strong { color: var(--accent); font-weight: 700; }
+.reveal em { font-style: normal; color: var(--muted); }
+
+.reveal a { color: var(--accent); text-decoration: none; }
+
+.reveal code,
+.reveal pre {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+}
+
+.reveal pre {
+    background: transparent;
+    box-shadow: none;
+    margin: 0.4em 0;
+    line-height: 1.45;
+    color: var(--fg);
+}
+
+.reveal pre code {
+    background: transparent;
+    padding: 0;
+    color: var(--fg);
+    max-height: none;
+}
+
+.reveal table {
+    margin: 0.6em auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 0.85em;
+    width: 100%;
+}
+
+.reveal table th,
+.reveal table td {
+    text-align: left;
+    padding: 0.55em 0.9em;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+}
+
+.reveal table th {
+    font-weight: 600;
+    color: var(--muted);
+    border-bottom: 1.5px solid var(--fg);
+}
+
+.reveal section.center-title {
+    text-align: center;
+}
+
+.reveal section.center-title h1 {
+    font-size: 3em;
+    margin-bottom: 0.4em;
+}
+
+.reveal section.center-title .meta {
+    color: var(--muted);
+    font-size: 0.7em;
+    margin-top: 3em;
+}
+
+.reveal .pull {
+    font-size: 1.6em;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 1em 0;
+}
+
+.reveal .caption {
+    color: var(--muted);
+    font-size: 0.75em;
+    margin-top: 0.6em;
+}
+
+.reveal hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 0.6em 0 0.8em 0;
+}
+
+.reveal .slides section {
+    text-align: left;
+    padding: 2em;
+}
+
+.reveal .slide-number {
+    color: var(--muted);
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 12px;
+    bottom: 16px;
+    right: 20px;
+}
+
+.reveal pre.mermaid {
+    display: block;
+    margin: 0.6em auto;
+    text-align: center;
+    background: transparent;
+    box-shadow: none;
+    font-size: 1em;
+}
+
+.reveal pre.mermaid svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.reveal .ladder {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.reveal .ladder li {
+    padding: 0.5em 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    gap: 1.2em;
+    align-items: baseline;
+}
+
+.reveal .ladder li:last-child { border-bottom: none; }
+
+.reveal .ladder .lvl {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    font-size: 0.75em;
+    min-width: 4em;
+}
+
+.reveal .ladder .name {
+    font-weight: 600;
+    min-width: 11em;
+}
+
+.reveal .ladder .ex {
+    color: var(--muted);
+    font-size: 0.85em;
+}
+
+.reveal .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+    align-items: start;
+}
+
+.reveal .two-col h3 {
+    margin-top: 0;
+    color: var(--fg);
+    font-size: 1em;
+    padding-bottom: 0.4em;
+    border-bottom: 1.5px solid var(--fg);
+}
+
+.reveal .two-col.muted-right h3:last-of-type {
+    color: var(--muted);
+    border-bottom-color: var(--muted);
+}
