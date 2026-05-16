@@ -132,73 +132,54 @@ Note:
 
 ---
 
-## 5단계 마이그레이션
+## 5단계로 옮겼습니다
 
 | Stage | 무엇을 |
 |---|---|
-| 1. Dual Write | 쓰기를 양쪽으로 |
-| 2. Validation | 1개월 비교 |
-| 3. Dual Read | shadow read |
-| 4. Read Cutover | 읽기 전환 |
-| 5. Cleanup | 기존 시스템 제거 |
+| 1. Dual Write | 쓰기를 양쪽으로 · WAL replay로 무중단 bulk load |
+| 2. Validation | MySQL Dump ↔ Actionbase CDC Snapshot · 1개월 비교 |
+| 3. Dual Read | shadow read — 트래픽 패턴 검증 |
+| 4. Read Cutover | 읽기 전환 (원장) · 기존 시스템은 백업 |
+| 5. Cleanup | 수개월 후, 기존 시스템 제거 |
 
 <div class="caption">신뢰가 쌓일 때마다 한 칸씩 · <strong>틀려도 되돌릴 수 있는 길</strong>을 항상 남긴다</div>
 
 Note:
-5단계로 나눠 옮겼습니다. 한 번에 갈아끼우는 게 아니라 — 신뢰가 쌓일 때마다 한 칸씩. 각 단계마다 롤백할 길을 남겼습니다. 죽지 않을 길을 둘 이상.
+5단계로 나눠 옮겼습니다. 한 번에 갈아끼우는 게 아니라 — 신뢰가 쌓일 때마다 한 칸씩.
+
+Stage 1, 쓰기를 양쪽에 다 합니다. 히스토리 데이터는 MySQL dump → bulk load → WAL replay로 따라잡았어요. 무중단으로요.
+
+Stage 2, 쓰기가 양쪽에 들어간다고 해서 데이터가 같다는 보장은 없습니다. 1개월 동안 매일 비교했어요. MySQL dump가 진실, 액션베이스 CDC 누적이 검증 대상. 두 독립된 경로의 결과가 같은지 본 거죠.
+
+Stage 3, 그림자 읽기. 트래픽 패턴을 액션베이스가 받아낼 수 있는지 봤습니다. 결과는 안 쓰고요.
+
+Stage 4, 읽기를 액션베이스로 돌립니다. 원장이 된 시점이에요. 다만 기존 시스템은 그대로 둡니다. 무슨 일이 생기면 즉시 되돌리려고요.
+
+Stage 5, 수개월 후 이상 없음을 확인하고 나서야 기존 시스템을 내렸습니다.
+
+핵심은 — 각 단계마다 **틀려도 되돌릴 수 있는 길**을 남겼다는 점. 그리고 이 5단계가 그 후 다른 서비스 마이그레이션의 template이 됐습니다.
 
 ---
 
-## Stage 1 — 2 · Dual Write + Validation
+## Recent Views — 같은 원장, 다른 모드
 
 <pre class="mermaid">
 flowchart LR
-    App --> Existing[기존 시스템]
-    App --> AB[(Actionbase)]
-    App -.read.-> Existing
-</pre>
-
-<div class="caption"><strong>MySQL Dump</strong> ↔ <strong>Actionbase CDC Snapshot</strong> · 1개월 매일 비교</div>
-
-Note:
-Stage 1, 쓰기를 양쪽에 다 했습니다. 읽기는 그대로 기존 시스템. 액션베이스에 데이터가 차오르기 시작했어요. 히스토리 데이터는 한 번에 옮겼습니다. MySQL을 dump하고, 액션베이스에 bulk load하고, 그 사이 변경은 WAL을 replay해서 따라잡았어요. 무중단으로 가능했습니다.
-
-Stage 2, 쓰기가 양쪽에 들어간다고 해서 데이터가 같다는 보장은 없습니다. 그래서 1개월 동안 매일 비교했어요. MySQL dump를 진실로, 액션베이스 CDC 누적 스냅샷을 검증 대상으로. 두 독립된 경로로 만든 데이터가 같은지를 본 거죠.
-
----
-
-## Stage 3 — 5 · Shadow Read → Cutover → Cleanup
-
-<pre class="mermaid">
-flowchart LR
-    App --> AB[(Actionbase)]
-    App --> Existing[기존 시스템<br/>backup]
+    App -->|"queue=true"| AB[(Actionbase)]
+    AB --> WAL[(WAL)]
+    WAL --> Spark[Spark Streaming]
+    Spark --> AB
     App -.read.-> AB
 </pre>
 
-<div class="caption">Shadow Read · 읽기 전환 (원장) · 수개월 후 Cleanup</div>
+<div class="caption"><strong>즉각성과 정확성을 분리</strong> · 쓰기 폭발에도 백프레셔 없음</div>
 
 Note:
-Stage 3, 데이터가 맞는 것만으로는 부족했습니다. 트래픽도 받아내야 해요. 같은 쿼리를 그림자로 액션베이스에 보냈습니다. 결과는 안 쓰고, 패턴만.
+같은 원장 패턴인데, Recent Views는 쓰기가 폭발적이었어요. 상품을 보기만 해도 쓰기가 일어나니까요. 동기로 다 처리하면 응답이 지연되고 백프레셔가 생깁니다.
 
-Stage 4, 여기서 비로소 읽기를 액션베이스로 돌렸습니다. 원장이 된 시점이에요. 다만 기존 시스템은 그대로 두었습니다. 무슨 일이 생기면 즉시 되돌리려고요.
+해법은 처리 모드를 바꾸는 거였어요. 쓰기 요청이 오면 WAL에 queue=true로 적고 즉시 응답합니다. 실제 mutation은 Spark Streaming이 WAL을 consume해서 백그라운드로. 수십 ms 안에 반영됩니다.
 
-Stage 5, 수개월 후 이상 없음을 확인하고 나서야 기존 시스템을 내렸습니다. 그 후로 batch도, Redis 동기화도 없어요. 한 시스템으로 정리됐습니다.
-
----
-
-## 원장 도입에서 배운 것
-
-<ul class="ladder">
-    <li><span class="name">단계별 진행이 위험을 줄인다</span></li>
-    <li><span class="name">롤백 경로를 항상 열어둔다</span></li>
-    <li><span class="name">WAL replay로 무중단 bulk load</span></li>
-</ul>
-
-<div class="caption">이 5단계가 그 후 다른 서비스 마이그레이션의 template이 됐다</div>
-
-Note:
-이 5단계가 그 후 다른 서비스 마이그레이션의 template이 됐습니다. 단계별로 가면 위험이 줄고, 롤백 경로를 열어두고, WAL replay로 무중단으로 옮긴다.
+**즉각성과 정확성을 분리한 거죠.** 모든 use case가 strong consistency를 필요로 하진 않으니까, eventual consistency를 허용하는 변형을 둔 겁니다. 같은 원장 인프라 위에서 처리 모드만 바꾼 거예요.
 
 ---
 
@@ -259,13 +240,37 @@ Note:
 
 Lv.1, 엣지 모델이니까 GET·COUNT·SCAN이 자연스럽게 됩니다.
 
-Lv.2, Actionbase Now. Mutation 시점에 집계가 끝납니다. "이 상품, 지금 32명이 함께 보는 중" — 처음엔 Count를 비동기로 했는데 stale이 문제가 됐어요. 그래서 Mutation 안으로 집어넣었습니다.
+Lv.2, Actionbase Now. Mutation 시점에 집계가 끝납니다. "이 상품, 지금 32명이 함께 보는 중" — 다음 슬라이드에서 어떻게 태어났는지 잠깐 보여드릴게요.
 
 Lv.3, Now+. Now가 "이 상품 몇 명?"이라면, Now+는 거꾸로 "어느 상품이 제일 핫?". 같은 집계, 다른 축. 그래서 plus입니다.
 
 Lv.4, 멀티홉. "내 친구가 찜한 상품은 뭐지?" — 한 엣지가 아니라 두 엣지를 잇는 질문이에요. 어떻게 풀었는지는 잠시 후 ○○님이 보여드립니다.
 
-이 사다리는 처음부터 설계한 게 아닙니다. 운영되면서 서비스가 요구할 때마다 한 칸씩 자란 흔적이에요.
+이 사다리는 **처음부터 옳았던 설계가 아닙니다.** 운영되면서 서비스가 요구할 때마다 한 칸씩 자란 흔적이에요.
+
+---
+
+## Lv.2 Now — 처음엔 비동기였습니다
+
+<pre class="mermaid">
+flowchart LR
+    Before["Before — Async Count<br/>별도 집계 잡 · N초 stale"]
+    After["After — Now<br/>Mutation 안에 집계 · 즉시 반영"]
+    Before -.->|"'지금 N명' 요구가 등장"| After
+</pre>
+
+<div class="caption"><strong>처음부터 옳지 않았어도 괜찮았습니다</strong> — 운영이 한 칸을 자라게 했어요</div>
+
+Note:
+사다리에서 Lv.2가 어떻게 태어났는지 잠깐 말씀드릴게요.
+
+처음엔 Count를 비동기로 처리했어요. 별도 집계 잡이 돌고, N초 정도 stale한 상태로. 대부분 use case는 그걸로 괜찮았습니다.
+
+그런데 "지금 N명이 함께 보고 있다" — 이런 카피를 다는 서비스가 등장했어요. N초 stale로는 못 맞췄습니다. 사용자가 *같은 시각에* 보고 있는 게 핵심이니까요.
+
+그래서 Mutation 트랜잭션 안으로 Count 집계를 집어넣었어요. **Count가 1급 시민이 된 거죠.** 그게 Now입니다.
+
+(잠시 멈춤) 처음부터 옳았던 게 아니에요. 운영하면서 — 어떤 서비스가 무엇을 요구하는지 보고 — 시스템이 한 칸 자란 흔적입니다.
 
 ---
 
