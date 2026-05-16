@@ -249,7 +249,7 @@ Note:
     <li><span class="lvl">Lv.1</span> <span class="name">GET / COUNT / SCAN</span> <span class="ex">"내가 찜한 것"</span></li>
     <li><span class="lvl">Lv.2</span> <span class="name">Actionbase Now</span> <span class="ex">"이 상품, 지금 32명"</span></li>
     <li><span class="lvl">Lv.3</span> <span class="name">Actionbase Now+</span> <span class="ex">"지금 핫한 상품 top 10"</span></li>
-    <li><span class="lvl">Lv.4</span> <span class="name">멀티홉</span> <span class="ex">"친구가 찜한 상품" &nbsp;→&nbsp; <strong>도키</strong></span></li>
+    <li><span class="lvl">Lv.4</span> <span class="name">멀티홉</span> <span class="ex">"친구가 찜한 상품" &nbsp;→&nbsp; <strong>○○</strong></span></li>
 </ul>
 
 <div class="caption">처음부터 설계한 게 아니라 — 운영되면서 한 칸씩 자란 흔적</div>
@@ -263,7 +263,7 @@ Lv.2, Actionbase Now. Mutation 시점에 집계가 끝납니다. "이 상품, �
 
 Lv.3, Now+. Now가 "이 상품 몇 명?"이라면, Now+는 거꾸로 "어느 상품이 제일 핫?". 같은 집계, 다른 축. 그래서 plus입니다.
 
-Lv.4, 멀티홉. "내 친구가 찜한 상품은 뭐지?" — 한 엣지가 아니라 두 엣지를 잇는 질문이에요. 어떻게 풀었는지는 잠시 후 도키님이 보여드립니다.
+Lv.4, 멀티홉. "내 친구가 찜한 상품은 뭐지?" — 한 엣지가 아니라 두 엣지를 잇는 질문이에요. 어떻게 풀었는지는 잠시 후 ○○님이 보여드립니다.
 
 이 사다리는 처음부터 설계한 게 아닙니다. 운영되면서 서비스가 요구할 때마다 한 칸씩 자란 흔적이에요.
 
@@ -274,7 +274,7 @@ Lv.4, 멀티홉. "내 친구가 찜한 상품은 뭐지?" — 한 엣지가 아�
 | 단계 | 방법 | 목적 |
 |---|---|---|
 | Dev | Tests as Contracts | 약속한 동작을 정의하고 지킨다 |
-| Pre-Deploy | Shadow Testing &nbsp;→&nbsp; **데이브** | 프로덕션 트래픽으로 검증 |
+| Pre-Deploy | Shadow Testing &nbsp;→&nbsp; **○○** | 프로덕션 트래픽으로 검증 |
 | Migration | Comparison Verification | Source ↔ Actionbase 일치 |
 | Runtime | HBase Consistency | State · Index · Count 일관성 |
 
@@ -290,7 +290,7 @@ Note:
 
 Dev 단계엔 Tests as Contracts — 서비스 팀과의 계약이 곧 시나리오 테스트입니다. 깨지면 PR이 막혀요.
 
-Pre-Deploy 단계엔 Shadow Testing — 진짜 프로덕션 트래픽으로 새 버전을 검증합니다. 데이브님이 자세히 보여주실 거예요.
+Pre-Deploy 단계엔 Shadow Testing — 진짜 프로덕션 트래픽으로 새 버전을 검증합니다. ○○님이 자세히 보여주실 거예요.
 
 Migration 단계엔 Comparison Verification — 같은 데이터를 두 독립된 경로로 만들어 비교. Wish 5단계의 1개월 비교가 이겁니다.
 
@@ -308,22 +308,22 @@ Runtime엔 HBase Consistency — State는 진실, Index·Count는 파생. 어긋
 
 이 그래프로 **무엇이 가능한가**
 
-→ 세션 2 · **도키** · 멀티홉/마스터 그래프
+→ 세션 2 · **○○** · 멀티홉/마스터 그래프
 
 ### 질문 2
 
 프로덕션에서 **정말 믿어도 되는가**
 
-→ 세션 3 · **데이브** · 섀도 테스트
+→ 세션 3 · **○○** · 섀도 테스트
 
 </div>
 
 Note:
 오늘 액션베이스가 어떻게 들어왔는지를 두 길로 보여드렸고, 들어온 다음 어떤 기능과 검증이 따라왔는지도 보여드렸습니다. 자연스럽게 두 가지 질문이 남아요.
 
-첫 번째 — "이 그래프로 무엇이 가능한가." 도키님이 멀티홉으로 답해주실 겁니다. 사다리 가장 위에 있던 그 멀티홉이에요.
+첫 번째 — "이 그래프로 무엇이 가능한가." ○○님이 멀티홉으로 답해주실 겁니다. 사다리 가장 위에 있던 그 멀티홉이에요.
 
-두 번째 — "이걸 프로덕션에서 정말 믿어도 되는가." 데이브님이 섀도 테스트로 답해주실 겁니다. 검증 4가지 중 하나였던 그 섀도예요.
+두 번째 — "이걸 프로덕션에서 정말 믿어도 되는가." ○○님이 섀도 테스트로 답해주실 겁니다. 검증 4가지 중 하나였던 그 섀도예요.
 
 저는 오늘 우산을 펼친 거고, 두 분이 그 안의 두 챕터를 land 시켜주실 겁니다.
 
