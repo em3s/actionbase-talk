@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(gh api graphql -f 'query= *)",
+      "Bash(mkdir -p /Users/em/d/em3s/actionbase-talk/.claude/talk1)",
+      "Bash(git mv *)",
+      "Skill(update-config)"
+    ]
+  }
+}
