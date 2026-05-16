@@ -1,0 +1,137 @@
+:root {
+    --bg: #FAF8F5;
+    --fg: #2A2A2A;
+    --muted: #8B8680;
+    --accent: #3D5A6C;
+    --rule: #D8D3CC;
+
+    --font-body: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+}
+
+main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 96px 32px 128px;
+}
+
+.eyebrow {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin: 0 0 64px 0;
+}
+
+h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px 0;
+}
+
+.lede {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 0 80px 0;
+    max-width: 540px;
+}
+
+.talks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+}
+
+.talks li {
+    border-bottom: 1px solid var(--rule);
+}
+
+.talks a {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 24px;
+    align-items: baseline;
+    padding: 28px 0;
+    text-decoration: none;
+    color: inherit;
+    transition: padding 0.2s ease;
+}
+
+.talks a:hover {
+    padding-left: 8px;
+}
+
+.talks a:hover .arrow {
+    transform: translateX(4px);
+}
+
+.num {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+}
+
+.meta {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+.arrow {
+    color: var(--accent);
+    font-size: 1.2rem;
+    transition: transform 0.2s ease;
+}
+
+.talks li.upcoming a {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.talks li.upcoming .arrow {
+    color: var(--muted);
+}
+
+footer {
+    margin-top: 96px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+footer a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

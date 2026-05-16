@@ -4,7 +4,11 @@
 
 ## 디렉토리 구조
 
-- `slides.md`, `index.html`, `css/` — Reveal.js 슬라이드 (GitHub Pages)
+- `index.html` — 랜딩 페이지 (talks 목록)
+- `talks/talkN/` — 개별 발표
+  - `index.html` — Reveal.js entry
+  - `slides.md` — 슬라이드 본문 + speaker notes
+- `css/` — 공유 스타일 (`theme.css` 슬라이드용 · `landing.css` 랜딩용)
 - `docs/` — **계속 재사용하는 도구함**. git 추적.
   - `overview.md` — 시리즈 구성, 톤 원칙, 핵심 메시지
   - `narrative.md` — 서사 원칙

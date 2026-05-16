@@ -1,6 +1,6 @@
 # actionbase-talk
 
-"액션베이스가 자라온 길" — Reveal.js 발표 자료.
+액션베이스 발표 자료 모음. Reveal.js · GitHub Pages.
 
 ## 미리보기
 
@@ -12,8 +12,10 @@ python3 -m http.server 8000
 npx serve .
 ```
 
-`http://localhost:8000` 열기.
+- `http://localhost:8000/` — 랜딩 페이지 (talks 목록)
+- `http://localhost:8000/talks/talk1/` — 개별 발표
 
+발표 조작:
 - 화살표 키 / Space로 이동
 - `S`로 스피커 노트 창 (다른 모니터에 띄움)
 - `F`로 풀스크린
@@ -23,13 +25,27 @@ npx serve .
 
 ```
 .
-├── index.html          Reveal.js entry, mermaid initialize
-├── slides.md           16장 슬라이드 + speaker notes
-├── css/theme.css       디자인 시스템 (off-white + charcoal)
-└── assets/             (필요한 이미지)
+├── index.html              랜딩 페이지 (talks 목록)
+├── css/
+│   ├── theme.css           슬라이드용 디자인 시스템
+│   └── landing.css         랜딩용 스타일
+├── talks/
+│   └── talk1/
+│       ├── index.html      Reveal.js entry, mermaid initialize
+│       └── slides.md       슬라이드 + speaker notes
+├── docs/                   재사용 도구함 (overview, narrative, design, references)
+└── .claude/                Claude Code 설정 + 발표별 작업 메모
 ```
 
-`slides.md`만 편집하면 됩니다.
+## 새 talk 추가
+
+```bash
+cp -r talks/talk1 talks/talk2
+# talks/talk2/slides.md 편집
+# index.html의 .talks 리스트에 <li> 항목 추가
+```
+
+## 슬라이드 작성
 
 - `---` (단독 줄) = 슬라이드 구분
 - `--` (단독 줄) = 같은 슬라이드 안의 vertical 분할
@@ -46,29 +62,18 @@ CSS variables in `css/theme.css`:
 | `--muted` | `#8B8680` |
 | `--accent` | `#3D5A6C` |
 
-Mermaid theme is wired to the same palette in `index.html`.
+Mermaid theme은 같은 팔레트로 talks/talkN/index.html 안에서 wiring.
 
 ## GitHub Pages 배포
 
-저장소 만든 뒤:
+repo settings → Pages → Source: `main` branch, `/` (root) → Save.
 
-```bash
-git init
-git add .
-git commit -m "Initial slides"
-git branch -M main
-git remote add origin git@github.com:em3s/actionbase-talk.git
-git push -u origin main
-```
-
-GitHub repo settings → Pages → Source: `main` branch, `/` (root) → Save.
-
-`https://em3s.github.io/actionbase-talk/` 에서 접근 가능.
+`https://em3s.github.io/actionbase-talk/` 에서 랜딩, `/talks/talk1/` 에서 발표.
 
 ## 인쇄용 PDF
 
 쿼리 파라미터 `?print-pdf` 붙여서 브라우저에서 열고 PDF로 출력:
 
 ```
-http://localhost:8000/?print-pdf
+http://localhost:8000/talks/talk1/?print-pdf
 ```

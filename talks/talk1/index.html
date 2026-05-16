@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>액션베이스가 자라온 길</title>
+
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" id="theme">
+
+    <link rel="stylesheet" href="../../css/theme.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown="slides.md"
+                     data-separator="^---$"
+                     data-separator-vertical="^--$"
+                     data-separator-notes="^Note:"
+                     data-charset="utf-8">
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'base',
+            themeVariables: {
+                fontFamily: 'Pretendard, sans-serif',
+                primaryColor: '#FAF8F5',
+                primaryTextColor: '#2A2A2A',
+                primaryBorderColor: '#2A2A2A',
+                lineColor: '#2A2A2A',
+                secondaryColor: '#3D5A6C',
+                tertiaryColor: '#FAF8F5',
+                background: '#FAF8F5'
+            },
+            flowchart: { curve: 'basis', padding: 12 }
+        });
+
+        window.renderMermaid = async () => {
+            const blocks = document.querySelectorAll('pre.mermaid:not([data-processed])');
+            for (const block of blocks) {
+                const code = block.textContent;
+                const { svg } = await mermaid.render('m-' + Math.random().toString(36).slice(2), code);
+                block.innerHTML = svg;
+                block.setAttribute('data-processed', 'true');
+            }
+        };
+
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            transition: 'fade',
+            transitionSpeed: 'fast',
+            width: 1920,
+            height: 1080,
+            margin: 0.06,
+            minScale: 0.2,
+            maxScale: 2.0,
+            plugins: [RevealMarkdown, RevealNotes, RevealHighlight]
+        }).then(() => {
+            window.renderMermaid();
+        });
+
+        Reveal.on('slidechanged', () => window.renderMermaid());
+    </script>
+</body>
+</html>
