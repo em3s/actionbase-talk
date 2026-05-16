@@ -54,8 +54,8 @@ URL: https://em3s.github.io/actionbase-talk/ (랜딩) · `/talks/talkN/` (각 �
 
 1. https://github.com/em3s/actionbase-talk/issues/1 — talk 1 source
 2. Issue 본문 편집 (markdown — Reveal.js comment·speaker notes 그대로 됨)
-3. Actions 탭 → **Sync slides from issue** → **Run workflow** → `talk: 1` 입력
-4. 워크플로가 `talks/talk1/slides.md` 덮어쓰고 commit + push → Pages 재배포 (~30s)
+3. Actions 탭 → **Sync slides from issues** → **Run workflow** 클릭 (입력 없음)
+4. 워크플로가 `talks/*/issue` 모두 읽어서 각각 해당 issue 본문을 `slides.md`로 덮어씀 → commit + push → Pages 재배포 (~30s)
 
 워크플로는 issue **body만** 사용. title·label·comments는 무시.
 

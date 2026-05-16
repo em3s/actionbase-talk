@@ -1,13 +1,7 @@
-name: Sync slides from issue
+name: Sync slides from issues
 
 on:
   workflow_dispatch:
-    inputs:
-      talk:
-        description: 'Talk number (e.g. 1)'
-        required: true
-        default: '1'
-        type: string
 
 jobs:
   sync:
@@ -18,43 +12,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Resolve issue and write slides
+      - name: Sync all talks
         env:
           GH_TOKEN: ${{ github.token }}
-          TALK: ${{ inputs.talk }}
         run: |
           set -euo pipefail
-          TALK_DIR="talks/talk${TALK}"
-          ISSUE_FILE="${TALK_DIR}/issue"
-          DEST="${TALK_DIR}/slides.md"
+          shopt -s nullglob
 
-          if [ ! -f "$ISSUE_FILE" ]; then
-            echo "::error::Missing issue mapping at $ISSUE_FILE"
-            exit 1
-          fi
+          for issue_file in talks/*/issue; do
+            talk_dir=$(dirname "$issue_file")
+            dest="${talk_dir}/slides.md"
 
-          ISSUE_NUMBER=$(tr -d '[:space:]' < "$ISSUE_FILE")
-          if ! [[ "$ISSUE_NUMBER" =~ ^[0-9]+$ ]]; then
-            echo "::error::$ISSUE_FILE does not contain a valid issue number"
-            exit 1
-          fi
+            issue_number=$(tr -d '[:space:]' < "$issue_file")
+            if ! [[ "$issue_number" =~ ^[0-9]+$ ]]; then
+              echo "::warning::${issue_file} does not contain a valid issue number — skipping"
+              continue
+            fi
 
-          echo "Syncing from issue #${ISSUE_NUMBER} → ${DEST}"
-          gh issue view "$ISSUE_NUMBER" --json body --jq '.body' > "$DEST"
-          echo "ISSUE_NUMBER=$ISSUE_NUMBER" >> "$GITHUB_ENV"
+            echo "Syncing issue #${issue_number} → ${dest}"
+            gh issue view "$issue_number" --json body --jq '.body' > "$dest"
+          done
 
       - name: Commit and push
-        env:
-          TALK: ${{ inputs.talk }}
         run: |
           set -euo pipefail
-          DEST="talks/talk${TALK}/slides.md"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$DEST"
+          git add talks/*/slides.md
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "Sync talk${TALK} slides from issue #${ISSUE_NUMBER}"
+          git commit -m "Sync slides from issues"
           git push
