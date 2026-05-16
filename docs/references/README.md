@@ -6,3 +6,4 @@
 - [wearedevelopers-2026-submission.md](wearedevelopers-2026-submission.md) — *I Built a Database Nobody Asked For* (WeAreDevelopers World Congress 2026 session submission)
 - [internal-announcement.md](internal-announcement.md) — 액션베이스 오픈소스 공개 사내 공지
 - [actionbase-site/](actionbase-site/) — Actionbase 공식 사이트의 blog (오픈소스 공개글 포함) · stories 전체 사본 (영문 + `ko/` 한국어)
+- [ifkakao-2024-transcript.md](ifkakao-2024-transcript.md) — 2024 if(kakao) 발표 스크립트 (YouTube 자동 자막을 교정해 정리한 버전)
