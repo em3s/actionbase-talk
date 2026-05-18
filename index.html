@@ -15,7 +15,7 @@
     <main>
         <p class="eyebrow">Actionbase Talks</p>
 
-        <h1>액션베이스가 자라온 길</h1>
+        <h1>actionbase-talk</h1>
 
         <p class="lede">
             카카오 커머스에서 시작된 사용자 상호작용 데이터베이스, 액션베이스의 여정을 세 명의 발표자가 함께 풀어갑니다.
@@ -26,7 +26,7 @@
                 <a href="talks/talk1/">
                     <span class="num">01</span>
                     <span>
-                        <span class="title">액션베이스가 자라온 길</span>
+                        <span class="title">액션베이스 소개</span>
                         <span class="meta">시리즈 1/3 · 2026 · 본인</span>
                     </span>
                     <span class="arrow">→</span>
@@ -38,5 +38,20 @@
             <a href="https://github.com/em3s/actionbase-talk">github.com/em3s/actionbase-talk</a>
         </footer>
     </main>
+
+    <script>
+        document.querySelectorAll('.talks a').forEach(async (a) => {
+            try {
+                const resp = await fetch(a.getAttribute('href') + 'slides.md');
+                if (!resp.ok) return;
+                const md = await resp.text();
+                const m = md.match(/^# (.+)$/m);
+                if (m) {
+                    const titleEl = a.querySelector('.title');
+                    if (titleEl) titleEl.textContent = m[1].trim();
+                }
+            } catch {}
+        });
+    </script>
 </body>
 </html>
