@@ -208,3 +208,18 @@
     color: var(--muted);
     border-bottom-color: var(--muted);
 }
+
+.reveal .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2em;
+    align-items: start;
+}
+
+.reveal .three-col h3 {
+    margin-top: 0;
+    color: var(--fg);
+    font-size: 1em;
+    padding-bottom: 0.4em;
+    border-bottom: 1.5px solid var(--fg);
+}
