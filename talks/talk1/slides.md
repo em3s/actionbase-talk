@@ -177,32 +177,46 @@ Note:
 
 ---
 
-## 실제 연동 — 두 가지 길
+## 실제 연동 — 세 가지 사례
 
-<div class="two-col">
+<div class="three-col">
 
-### 원장 (SSOT)
+### Wish
 
-데이터의 **출처**가 되는 길
+원장 (SSOT)
 
-→ Wish 사례
+5단 마이그레이션
 
-### 뷰 (CQRS)
+<div class="caption">Strong consistency</div>
 
-기존 시스템 **옆**에 붙는 길
+### Recent Views
 
-→ Friends 사례
+원장+ (SSOT)
+
+즉각성과 정확성 분리 · WAL → Spark
+
+<div class="caption">Eventual consistency</div>
+
+### Friends
+
+뷰 (CQRS)
+
+기존 시스템 옆 · CDC 연결
+
+<div class="caption">옆에 붙는 길</div>
 
 </div>
 
 Note:
-실제 서비스에는 두 가지 방식으로 들어갑니다.
+실제 서비스에는 세 가지 길로 들어갔습니다.
 
-하나는 원장. 데이터의 출처가 되는 길입니다. 선물하기의 찜이 이 경우예요. MySQL+Redis 구조를 5단계 마이그레이션으로 옮겼습니다. 매 단계마다 되돌릴 수 있는 길을 남겼고요.
+Wish — 선물하기의 찜. 원장이 되는 길입니다. MySQL+Redis 구조를 5단계 마이그레이션으로 옮겼어요. 매 단계마다 되돌릴 수 있는 길을 남겼고, 이 5단계가 그 후 다른 서비스 마이그레이션의 template이 됐습니다. Strong consistency가 핵심.
 
-다른 하나는 뷰. 기존 시스템 옆에 붙는 길입니다. 카카오톡 친구 관계가 이 경우예요. 소스 DB는 한 줄도 안 바꾸고, CDC로 변경을 흘려보내서 뷰만 만들었습니다.
+Recent Views — 같은 원장이지만 쓰기가 폭발적이라 처리 모드를 바꿨어요. 쓰기를 WAL에 queue=true로 적고 즉시 응답, Spark Streaming이 백그라운드로 처리합니다. 즉각성과 정확성을 분리한 거죠. Eventual consistency 허용.
 
-어느 한 쪽이 우월하지 않습니다. 팀 상황과 데이터 owner 관계에 맞춰 고릅니다.
+Friends — 카카오톡 친구 관계. 기존 시스템 옆에 붙는 길입니다. 소스 DB는 한 줄도 안 바꾸고, CDC로 변경을 흘려보내서 뷰만 만들었어요. CQRS 패턴.
+
+셋 다 같은 엔진 위에서 일어나는 일입니다. 팀 상황과 데이터 owner 관계에 맞춰 고릅니다.
 
 ---
 
